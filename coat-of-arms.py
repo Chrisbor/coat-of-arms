@@ -29,6 +29,7 @@ global joingamegm
 global loadgamegm
 global createplayergm
 global createworldgm
+global connecttoservergm
 
 def main():
     create_menus()
@@ -47,6 +48,7 @@ def create_menus():
     global loadgamegm
     global createplayergm
     global createworldgm
+    global connecttoservergm
 
     #Actual creation
     startm = Menu([], "\n-- Start menu --")
@@ -58,23 +60,28 @@ def create_menus():
     loadgamegm = GuidedMenu([], "\nPlease help me to load the game:")
     createplayergm = GuidedMenu([], "\nPlease choose your player's attributes:")
     createworldgm = GuidedMenu([], "\nPlease choose these parameters to create a new world:")
+    connecttoservergm = GuidedMenu([], "\nBefore continuing, we have to connect to the communication server:")
 
     #Adding entries just now, to avoid circular references
     startm.entries = [("New Game", newgamem.execute),("Load Game", loadgamegm.execute),("Quit", quitm.execute)]
     newgamem.entries = [("Start game", startgamegm.execute),("Join game", joingamegm.execute),("Return to start menu", startm.execute)]
     quitm.entries = [("Yes", exit),("No", startm.execute),("Return to start menu", startm.execute)]
 
-    startgamegm.add_entries(["Game name:", "Communication e-mail server:", "E-mail account password:", createworldgm.execute, loadgamegm.execute, createplayergm.execute])
-    joingamegm.add_entries(["Game name:", "Communication e-mail server:", "E-mail account password:", createplayergm.execute])
+    startgamegm.add_entries([connecttoservergm.execute, createworldgm.execute, loadgamegm.execute, createplayergm.execute])
+    joingamegm.add_entries([connecttoservergm.execute, createplayergm.execute])
     loadgamegm.add_entries(["Absolute file path to the save file:", load_world])
     createplayergm.add_entries(["Name:", create_player])#, "Nation:", "Age (Be careful!):"])#, (sexm = Menu([("Female", return "Female"), ("Male", return "Male")])).execute])
-    createworldgm.add_entries(["Name:", "Height:", "Width:"])
+    createworldgm.add_entries(["Name:", "Height:", "Width:", create_world])
+    connecttoservergm.add_entries(["Game name:", "Communication e-mail server:", "E-mail account password:", connect_to_server])
 
 def load_world():
     global world
 
     path = loadgamegm.entries[0][1]
     if path == "test": path = "c:\\users\\private\\documents\\github\\coat-of-arms\\example_world.xml"
+    elif path == "none":
+        print("!No world loaded!")
+        return
     print("Loading world save "+path+"...   ", end="")
     world = World(path)
     print("Done.")
@@ -83,7 +90,26 @@ def create_player():
     global world
 
     print("Creating player...   ", end="")
-    world.players[createplayergm.entries[0][1]] = Player(createplayergm.entries[0])
+    try:
+        world.players[createplayergm.entries[0][1]] = Player(createplayergm.entries[0])
+        print("Done.")
+    except NameError:
+        print("Sorry. Joining impossible. There is no world you can go into!")
+        newgamem.execute()
+
+def create_world():
+    global world
+
+    print("Just for completion. Doesn't work in the first versions!")
+    print("Creating world...   ", end="")
+    #get data from createworldgm; the world = World(data)
+    print("Done.")
+
+def connect_to_server():
+    print("Trying to connect...   ", end="")
+    #get data from connecttoservergm and connect to server
+    print("Done.\nLogging in...   ", end="")
+    #Log in to e-mail account
     print("Done.")
 
 
