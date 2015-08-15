@@ -136,6 +136,40 @@ class World:
             self.players[name] = Player(name, gold, territories, units)
 
 
+    def save_world(self, file_name=None):
+        #Creating and appending tree elements
+        root = xmlET.Element('world')
+        world_tree = xmlET.ElementTree(root)
+        seedE = xmlET.Element('seed')
+        seedE.text = str(self.random_seed)
+        root.append(seedE)
+
+        for t in self.territories:
+            terr = self.territories[t]
+            tE = xmlET.Element('territory', {'name': t})
+            taxE = xmlET.Element('tax')
+            taxE.text = str(terr.tax)
+            tE.append(taxE)
+            ownerE = xmlET.Element('owner')
+            ownerE.text = terr.owner
+            tE.append(ownerE)
+            root.append(tE)
+
+            for n in terr.neighbours:
+                nE = xmlET.Element('neighbour')
+                nE.text = n
+                tE.append(nE)
+
+            for u in terr.units:
+                uE = xmlET.Element('unit')
+                uE.text = u
+                tE.append(uE)
+
+        #Writing the ElementTree
+        world_tree.write(file_name, "utf-8", True)
+        print("\n\nWorking?\n\n _ \n/_\\\n\\_/\n")
+
+
     def pretty_print(self):
         "This is primarily a debugging function"
         print("World:\n======")
@@ -164,4 +198,5 @@ class World:
 if __name__ == '__main__': #debugging
     w = World('example_world.xml')
     w.pretty_print()
+    w.save_world('test_save.xml')
 
