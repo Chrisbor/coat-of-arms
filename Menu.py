@@ -63,12 +63,12 @@ class Menu:
         while not valid_input(choice, range(len(self.entries))):
             print("Invalid input! Please choose again:")
             choice = input(">>> ")
-      #  try:
-        self.entries[int(choice)-1][1]()
-      #  except Exception as e:
-            #print("Sorry. An error occured. Please try again.")
-            #print(e)
-            #self.execute()
+        try:
+            self.entries[int(choice)-1][1]()
+        except Exception as e:
+            print("Sorry. An error occured. Please try again.")
+            print(e)
+            self.execute()
 
 
 
