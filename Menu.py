@@ -6,7 +6,7 @@
 # Licensed under the terms of the MIT license.
 #
 
-from types import FunctionType
+import sys
 
 class Menu:
     def __init__(self, start_entries=[], intro="Please choose an option:", back_entry=[True, "startm"]):
@@ -68,6 +68,7 @@ class Menu:
         except Exception as e:
             print("Sorry. An error occured. Please try again.")
             print(e)
+            if input("Show traceback (y/n)? > ") == 'y': print(sys.exc_info()[2])
             self.execute()
 
 
