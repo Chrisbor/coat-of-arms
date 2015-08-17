@@ -6,7 +6,7 @@
 # Licensed under the terms of the MIT license.
 #
 
-from types import FunctionType
+import sys
 
 class Menu:
     def __init__(self, start_entries=[], intro="Please choose an option:", back_entry=[True, "startm"]):
@@ -63,12 +63,13 @@ class Menu:
         while not valid_input(choice, range(len(self.entries))):
             print("Invalid input! Please choose again:")
             choice = input(">>> ")
-      #  try:
-        self.entries[int(choice)-1][1]()
-      #  except Exception as e:
-            #print("Sorry. An error occured. Please try again.")
-            #print(e)
-            #self.execute()
+        try:
+            self.entries[int(choice)-1][1]()
+        except Exception as e:
+            print("Sorry. An error occured. Please try again.")
+            print(e)
+            if input("Show traceback (y/n)? > ") == 'y': print(sys.exc_info()[2])
+            self.execute()
 
 
 
