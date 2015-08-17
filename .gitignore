@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 *.pyc
 test_save.xml
+=======
+__pycache__
+login-details
+>>>>>>> veddox/master
