@@ -148,12 +148,13 @@ class World:
 
     def save_world(self, file_name=None):
         #Creating and appending tree elements
+        #Creating root, adding seed
         root = xmlET.Element('world')
         world_tree = xmlET.ElementTree(root)
         seedE = xmlET.Element('seed')
         seedE.text = str(self.random_seed)
         root.append(seedE)
-
+        #Creating territories, adding name and owner
         for t in self.territories:
             terr = self.territories[t]
             tE = xmlET.Element('territory', {'name': t})
@@ -163,19 +164,38 @@ class World:
             ownerE = xmlET.Element('owner')
             ownerE.text = terr.owner
             tE.append(ownerE)
-            root.append(tE)
-
+            #Adding neighbours
             for n in terr.neighbours:
                 nE = xmlET.Element('neighbour')
                 nE.text = n
                 tE.append(nE)
-
+            #Adding units
             for u in terr.units:
                 uE = xmlET.Element('unit')
                 uE.text = u
                 tE.append(uE)
-
-        #Writing the ElementTree
+            root.append(tE)
+        #Creating players, adding name and gold
+        for p in self.players:
+            pl = self.players[p]
+            pE = xmlET.Element('player', {'name': p})
+            goldE = xmlET.Element('gold')
+            goldE.text = str(pl.gold)
+            pE.append(goldE)
+            #Adding the player's territories
+            for t in pl.territories:
+                tE = xmlET.Element('territory')
+                tE.text = t
+                pE.append(tE)
+            #Adding the player's units and corresponding data
+            for u in pl.units:
+                un = pl.units[u]
+                uE = xmlET.Element('unit', {'uid': un.uid, 'name': un.name,
+                            'strength': un.strength, 'size': un.size,
+                            'max_size': un.max_size, 'location': un.location})
+                pE.append(uE)
+            root.append(pE)
+        #Writing the complete ElementTree
         world_tree.write(file_name, "utf-8", True)
         print("\n\nWorking?\n\n _ \n/_\\\n\\_/\n")
 
